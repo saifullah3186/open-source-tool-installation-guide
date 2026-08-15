@@ -8,10 +8,6 @@ echo " Verification"
 echo "=================================================="
 echo
 
-# --------------------------------------------------
-# Helper
-# --------------------------------------------------
-
 pass() {
     echo "PASS: $1"
 }
@@ -77,9 +73,6 @@ echo
 
 echo "[4/7] Checking Nix..."
 
-# Try to load the Nix environment if it is not
-# already available in the current shell.
-
 if ! command -v nix >/dev/null 2>&1; then
     if [[ -f /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh ]]; then
         source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
@@ -101,9 +94,7 @@ echo
 
 echo "[5/7] Checking Fault..."
 
-FAULT_VERSION="$(
-    docker run --rm ghcr.io/aucohl/fault:latest fault --version
-)"
+FAULT_VERSION="$(docker run --rm ghcr.io/aucohl/fault:latest fault --version)"
 
 echo "$FAULT_VERSION"
 
@@ -116,7 +107,7 @@ fi
 echo
 
 # --------------------------------------------------
-# OpenLane / OpenROAD / Yosys
+# OpenLane environment
 # --------------------------------------------------
 
 echo "[6/7] Checking OpenLane environment..."
@@ -127,12 +118,11 @@ if [[ ! -d "$OPENLANE_DIR" ]]; then
     fail "OpenLane 2 directory not found at $OPENLANE_DIR"
 fi
 
-cd "$OPENLANE_DIR"
-
 echo "OpenLane directory: $OPENLANE_DIR"
 echo
-
 echo "Starting OpenLane Nix environment..."
+
+cd "$OPENLANE_DIR"
 
 nix-shell shell.nix --run '
     echo
@@ -150,10 +140,6 @@ nix-shell shell.nix --run '
     echo
     echo "KLayout:"
     klayout -v
-
-    echo
-    echo "Magic:"
-    magic -version
 '
 
 echo
@@ -164,27 +150,26 @@ echo
 
 echo "[7/7] Running OpenLane smoke test..."
 
-nix-shell shell.nix --run '
-    openlane --smoke-test
-'
+cd "$OPENLANE_DIR"
+
+nix-shell shell.nix --run "openlane --smoke-test"
 
 echo
+
 echo "=================================================="
 echo " ALL CHECKS PASSED"
 echo "=================================================="
 echo
 echo "Your open-source ASIC learning environment is ready."
 echo
-echo "You can now start working with:"
+echo "Available tools:"
 echo
-echo "  - Verilog / RTL"
 echo "  - Icarus Verilog"
 echo "  - OpenLane 2"
 echo "  - OpenROAD"
 echo "  - Yosys"
 echo "  - KLayout"
-echo "  - Magic"
 echo "  - Fault"
-echo "  - DFT / ATPG"
+echo "  - Docker"
+echo "  - Nix"
 echo
-echo "=================================================="
