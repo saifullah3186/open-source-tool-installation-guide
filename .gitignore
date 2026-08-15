@@ -1,0 +1,47 @@
+# Simulation / synthesis output
+*.vcd
+*.fst
+*.wlf
+*.vvp
+*.log
+*.jou
+*.history
+*.rpt
+*.sdf
+
+# Generated netlists / databases
+*.net
+*.db
+*.spef
+*.def
+*.lef
+*.gds
+*.oas
+
+# Tool-generated directories
+.openlane/
+.openroad/
+.klayout/
+runs/
+results/
+logs/
+work/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.bak
+*~
